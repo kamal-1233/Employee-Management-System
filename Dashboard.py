@@ -1,104 +1,149 @@
 from tkinter import *
 from PIL import Image, ImageTk
-from tkinter import messagebox
 
-def welcome_window(root, username, emailid):
+
+def welcome_window(root, username, emailid,
+                   gender, state, address,
+                   phone, dept, salary):
+
     root.withdraw()
 
-    welcome_win = Toplevel(root)
-    welcome_win.geometry("800x450+400+100")
-    welcome_win.title("Employee Dashboard")
-    welcome_win.resizable(False, False)
+    win = Toplevel(root)
+    win.geometry("800x450+400+100")
+    win.title("Employee Dashboard")
+    win.resizable(False, False)
 
-    # Background
-    bg_image = Image.open("images/userFrom.jpg")
-    bg_image = bg_image.resize((800, 450), Image.LANCZOS)
-    bg_photo = ImageTk.PhotoImage(bg_image)
+    # -------- MAIN WINDOW COLOR --------
+    win.configure(bg="#ecf0f1")
 
-    bg_label = Label(welcome_win, image=bg_photo)
-    bg_label.place(x=0, y=0)
-    bg_label.image = bg_photo
+    # -------- ICONS --------
+    user_img = Image.open("images/user.png").resize((20, 20))
+    user_icon = ImageTk.PhotoImage(user_img)
 
-    # Card
-    card = Frame(welcome_win, bg="white")
-    card.place(x=200, y=80, width=400, height=280)
+    mail_img = Image.open("images/mail.png").resize((20, 20))
+    mail_icon = ImageTk.PhotoImage(mail_img)
 
-    # Heading
-    Label(card, text="Employee Dashboard",
-          font=("Segoe UI", 18, "bold"),
-          bg="white", fg="#333").place(x=90, y=10)
+    # -------- TOP BAR --------
+    top = Frame(win, bg="#ecf0f1", height=50)
+    top.pack(fill="x")
 
-    # User Info
-    Label(card, text=f"Name: {username}",
-          font=("Segoe UI", 11), bg="white").place(x=50, y=60)
+    Label(top, image=user_icon, text=f" Welcome, {username}",
+          compound="left",
+          font=("Segoe UI", 14, "bold"),
+          bg="#ecf0f1").pack(side="left", padx=10)
 
-    Label(card, text=f"Email: {emailid}",
-          font=("Segoe UI", 11), bg="white").place(x=50, y=85)
+    Label(top, image=mail_icon, text=f" {emailid}",
+          compound="left",
+          font=("Segoe UI", 10),
+          bg="#ecf0f1").pack(side="right", padx=10)
 
-    # -------- FUNCTIONS --------
+    top.user_icon = user_icon
+    top.mail_icon = mail_icon
 
-    def my_profile():
-        messagebox.showinfo("My Profile",
-                            f"Name: {username}\nEmail: {emailid}")
+    # -------- MAIN AREA --------
+    main = Frame(win, bg="#ecf0f1")
+    main.pack(fill="both", expand=True)
 
-    def edit_profile():
-        edit_win = Toplevel(welcome_win)
-        edit_win.geometry("400x300")
-        edit_win.title("Edit Profile")
+    # -------- SIDEBAR --------
+    sidebar = Frame(main, bg="#2c3e50", width=180)
+    sidebar.pack(side="left", fill="y")
+    sidebar.pack_propagate(False)
 
-        Label(edit_win, text="Update Name").pack(pady=5)
-        name_entry = Entry(edit_win)
-        name_entry.insert(0, username)
-        name_entry.pack()
+    # -------- CONTENT AREA --------
+    content = Frame(main, bg="white")
+    content.pack(side="left", fill="both", expand=True)
 
-        Label(edit_win, text="Update Email").pack(pady=5)
-        email_entry = Entry(edit_win)
-        email_entry.insert(0, emailid)
-        email_entry.pack()
+    # -------- CLEAR FUNCTION --------
+    def clear_content():
+        for widget in content.winfo_children():
+            widget.destroy()
 
-        def save():
-            messagebox.showinfo("Success", "Profile Updated (Demo)")
-            edit_win.destroy()
+    # -------- HOME --------
+    def show_home():
+        clear_content()
+        Label(content, text=f"Welcome, {username}",
+              font=("Segoe UI", 20, "bold"),
+              bg="white").pack(pady=80)
 
-        Button(edit_win, text="Save", command=save).pack(pady=10)
+    # -------- PROFILE --------
+    def show_profile():
+        clear_content()
 
-    def raise_complaint():
-        comp_win = Toplevel(welcome_win)
-        comp_win.geometry("400x300")
-        comp_win.title("Raise Complaint")
+        Label(content, text="My Profile",
+              font=("Segoe UI", 20, "bold"),
+              bg="white", fg="#2c3e50").pack(pady=15)
 
-        Label(comp_win, text="Subject").pack(pady=5)
-        subject = Entry(comp_win)
-        subject.pack()
+        card = Frame(content, bg="#f8f9fa", bd=1, relief="solid")
+        card.pack(padx=40, pady=10)
 
-        Label(comp_win, text="Description").pack(pady=5)
-        desc = Text(comp_win, height=5)
-        desc.pack()
+        def row(label, value):
+            row_frame = Frame(card, bg="#f8f9fa")
+            row_frame.pack(fill="x", padx=20, pady=5)
 
-        def submit():
-            messagebox.showinfo("Success", "Complaint Submitted")
-            comp_win.destroy()
+            Label(row_frame, text=label,
+                  font=("Segoe UI", 11, "bold"),
+                  bg="#f8f9fa", fg="#333", width=12, anchor="w").pack(side="left")
 
-        Button(comp_win, text="Submit", command=submit).pack(pady=10)
+            Label(row_frame, text=value,
+                  font=("Segoe UI", 11),
+                  bg="#f8f9fa", fg="#555").pack(side="left")
 
+        row("Name", username)
+        row("Email", emailid)
+        row("Phone", phone)
+        row("Department", dept)
+        row("Salary", salary)
+        row("State", state)
+        row("Address", address)
+        row("Gender", gender)
+
+    # -------- EDIT --------
+    def show_edit():
+        clear_content()
+
+        Label(content, text="Edit Profile",
+              font=("Segoe UI", 18, "bold"),
+              bg="white").pack(pady=10)
+
+        Entry(content).pack(pady=5)
+        Entry(content).pack(pady=5)
+
+        Button(content, text="Save").pack(pady=10)
+
+    # -------- COMPLAINT --------
+    def show_complaint():
+        clear_content()
+
+        Label(content, text="Raise Complaint",
+              font=("Segoe UI", 18, "bold"),
+              bg="white").pack(pady=10)
+
+        Entry(content).pack(pady=5)
+        Text(content, height=5).pack(pady=5)
+
+        Button(content, text="Submit").pack(pady=10)
+
+    # -------- LOGOUT --------
     def logout():
-        welcome_win.destroy()
+        win.destroy()
         root.deiconify()
 
-    # -------- BUTTONS --------
+    # -------- SIDEBAR BUTTONS --------
+    Button(sidebar, text="My Profile",
+           width=20, bg="#34495e", fg="white",
+           command=show_profile).pack(pady=10)
 
-    Button(card, text="My Profile",
-           width=18, bg="#3498db", fg="white",
-           command=my_profile).place(x=120, y=120)
+    Button(sidebar, text="Edit Profile",
+           width=20, bg="#34495e", fg="white",
+           command=show_edit).pack(pady=10)
 
-    Button(card, text="Edit Profile",
-           width=18, bg="#f39c12", fg="white",
-           command=edit_profile).place(x=120, y=155)
+    Button(sidebar, text="Complaint",
+           width=20, bg="#34495e", fg="white",
+           command=show_complaint).pack(pady=10)
 
-    Button(card, text="Raise Complaint",
-           width=18, bg="#9b59b6", fg="white",
-           command=raise_complaint).place(x=120, y=190)
+    Button(sidebar, text="Logout",
+           width=20, bg="red", fg="white",
+           command=logout).pack(pady=20)
 
-    Button(card, text="Logout",
-           width=18, bg="red", fg="white",
-           command=logout).place(x=120, y=225)
+    # -------- DEFAULT --------
+    show_home()

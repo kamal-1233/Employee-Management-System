@@ -84,15 +84,21 @@ def Logic_check():
 
         data = mycursor.fetchone()
         if data:
-            messagebox.showinfo("Success", "Login Successful ✅")
-
             username = data[1]   # name column
             user_email = data[2] # email column
+            gender = data[4]
+            state = data[5]
+            address = data[6]
+            phone = data[8]
+            dept = data[9]
+            salary = data[10]
             password_entry.delete(0,END)
             email_entry.delete(0,END)
             
 
-            Dashboard.welcome_window(myroot, username, user_email)
+            Dashboard.welcome_window(myroot, username, user_email,
+                                    gender, state, address,
+        phone, dept, salary)
         else:
             messagebox.showerror("Error", "Invalid Email or Password")        
 
