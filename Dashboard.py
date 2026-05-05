@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
+import newUser
 
 
 def welcome_window(root, username, emailid,
@@ -136,6 +137,10 @@ def welcome_window(root, username, emailid,
     Button(sidebar, text="Edit Profile",
            width=20, bg="#34495e", fg="white",
            command=show_edit).pack(pady=10)
+    
+    Button(sidebar, text="Add Employee",
+       width=20, bg="#34495e", fg="white",
+       command=lambda: newUser.signup(win)).pack(pady=10)
 
     Button(sidebar, text="Complaint",
            width=20, bg="#34495e", fg="white",

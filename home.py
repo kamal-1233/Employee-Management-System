@@ -1,7 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import messagebox
-import newUser
 import mysql.connector
 import Dashboard
 
@@ -122,22 +121,6 @@ login_button = Button(
     bd=0,
     width=12
 )
-login_button.place(x=60, y=205)
-
-# New User Button
-new_user_button = Button(
-    login_frame,
-    text="Add Employee",
-    font=("Segoe UI", 11, "bold"),
-    bg="#2ecc71",
-    fg="white",
-    activebackground="#27ae60",
-    cursor="hand2",
-    bd=0,
-    width=12
-)
-new_user_button.place(x=200, y=205)
-
-new_user_button.bind("<Button-1>", lambda k: newUser.signup(myroot))
+login_button.place(x=120, y=205)
 
 myroot.mainloop()
