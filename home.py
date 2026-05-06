@@ -30,7 +30,7 @@ login_frame.place(x=190, y=75, width=400, height=260)
 # Heading
 login_heading = Label(
     login_frame,
-    text="Employee Login Panel",
+    text="Admin Login Panel",
     font=("Segoe UI", 20, "bold"),
     bg="white",
     fg="#333"
@@ -122,5 +122,14 @@ login_button = Button(
     width=12
 )
 login_button.place(x=120, y=205)
+
+
+#------------------ App Icon ----------------
+icon_image = Image.open("images/user.png")
+icon_image = icon_image.resize((50,50) ,Image.LANCZOS)
+icon_image = ImageTk.PhotoImage(icon_image)
+myroot.iconphoto(False,icon_image)
+
+myroot.iconbitmap("images/mail.ico")
 
 myroot.mainloop()

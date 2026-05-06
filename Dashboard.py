@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import newUser
 
@@ -24,49 +25,21 @@ def welcome_window(root, username, emailid,
     mail_img = Image.open("images/mail.png").resize((20, 20))
     mail_icon = ImageTk.PhotoImage(mail_img)
 
-    # -------- TOP BAR --------
-    top = Frame(win, bg="#ecf0f1", height=50)
-    top.pack(fill="x")
+    # -------- FUNCTIONS --------
+    def logout():
+        win.destroy()
+        root.deiconify()
 
-    Label(top, image=user_icon, text=f" Welcome, {username}",
-          compound="left",
-          font=("Segoe UI", 14, "bold"),
-          bg="#ecf0f1").pack(side="left", padx=10)
-
-    Label(top, image=mail_icon, text=f" {emailid}",
-          compound="left",
-          font=("Segoe UI", 10),
-          bg="#ecf0f1").pack(side="right", padx=10)
-
-    top.user_icon = user_icon
-    top.mail_icon = mail_icon
-
-    # -------- MAIN AREA --------
-    main = Frame(win, bg="#ecf0f1")
-    main.pack(fill="both", expand=True)
-
-    # -------- SIDEBAR --------
-    sidebar = Frame(main, bg="#2c3e50", width=180)
-    sidebar.pack(side="left", fill="y")
-    sidebar.pack_propagate(False)
-
-    # -------- CONTENT AREA --------
-    content = Frame(main, bg="white")
-    content.pack(side="left", fill="both", expand=True)
-
-    # -------- CLEAR FUNCTION --------
     def clear_content():
         for widget in content.winfo_children():
             widget.destroy()
 
-    # -------- HOME --------
     def show_home():
         clear_content()
         Label(content, text=f"Welcome, {username}",
               font=("Segoe UI", 20, "bold"),
               bg="white").pack(pady=80)
 
-    # -------- PROFILE --------
     def show_profile():
         clear_content()
 
@@ -98,7 +71,6 @@ def welcome_window(root, username, emailid,
         row("Address", address)
         row("Gender", gender)
 
-    # -------- EDIT --------
     def show_edit():
         clear_content()
 
@@ -111,7 +83,6 @@ def welcome_window(root, username, emailid,
 
         Button(content, text="Save").pack(pady=10)
 
-    # -------- COMPLAINT --------
     def show_complaint():
         clear_content()
 
@@ -124,10 +95,63 @@ def welcome_window(root, username, emailid,
 
         Button(content, text="Submit").pack(pady=10)
 
-    # -------- LOGOUT --------
-    def logout():
-        win.destroy()
-        root.deiconify()
+    # -------- MENU BAR --------
+    menubar = Menu(win)
+
+    # FILE MENU
+    file_menu = Menu(menubar, tearoff=0)
+    file_menu.add_command(label="Logout", command=logout)
+    file_menu.add_separator()
+    file_menu.add_command(label="Exit", command=win.destroy)
+    menubar.add_cascade(label="File", menu=file_menu)
+
+    # EMPLOYEE MENU
+    emp_menu = Menu(menubar, tearoff=0)
+    emp_menu.add_command(label="Add Employee", command=lambda: newUser.signup(win))
+    emp_menu.add_separator()
+    emp_menu.add_command(label="My Profile", command=show_profile)
+    emp_menu.add_separator()
+    emp_menu.add_command(label="Edit Profile", command=show_edit)
+    menubar.add_cascade(label="Employee", menu=emp_menu)
+
+    # HELP MENU
+    help_menu = Menu(menubar, tearoff=0)
+    help_menu.add_command(label="About",
+        command=lambda: messagebox.showinfo(
+            "About", "Employee Management System\nVersion 1.0"))
+    menubar.add_cascade(label="Help", menu=help_menu)
+
+    win.config(menu=menubar)
+
+    # -------- TOP BAR --------
+    top = Frame(win, bg="#ecf0f1", height=50)
+    top.pack(fill="x")
+
+    Label(top, image=user_icon, text=f" Welcome, {username}",
+          compound="left",
+          font=("Segoe UI", 14, "bold"),
+          bg="#ecf0f1").pack(side="left", padx=10)
+
+    Label(top, image=mail_icon, text=f" {emailid}",
+          compound="left",
+          font=("Segoe UI", 10),
+          bg="#ecf0f1").pack(side="right", padx=10)
+
+    top.user_icon = user_icon
+    top.mail_icon = mail_icon
+
+    # -------- MAIN AREA --------
+    main = Frame(win, bg="#ecf0f1")
+    main.pack(fill="both", expand=True)
+
+    # SIDEBAR
+    sidebar = Frame(main, bg="#2c3e50", width=180)
+    sidebar.pack(side="left", fill="y")
+    sidebar.pack_propagate(False)
+
+    # CONTENT
+    content = Frame(main, bg="white")
+    content.pack(side="left", fill="both", expand=True)
 
     # -------- SIDEBAR BUTTONS --------
     Button(sidebar, text="My Profile",
@@ -137,10 +161,10 @@ def welcome_window(root, username, emailid,
     Button(sidebar, text="Edit Profile",
            width=20, bg="#34495e", fg="white",
            command=show_edit).pack(pady=10)
-    
+
     Button(sidebar, text="Add Employee",
-       width=20, bg="#34495e", fg="white",
-       command=lambda: newUser.signup(win)).pack(pady=10)
+           width=20, bg="#34495e", fg="white",
+           command=lambda: newUser.signup(win)).pack(pady=10)
 
     Button(sidebar, text="Complaint",
            width=20, bg="#34495e", fg="white",
