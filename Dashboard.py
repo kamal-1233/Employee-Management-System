@@ -358,11 +358,11 @@ def welcome_window(root, username, emailid,
             bg="#2ecc71",
             fg="white",
             font=("Segoe UI", 11, "bold"),
-            width=10,
+            width=8,
             bd=0,
             cursor="hand2",
             command=save_user
-        ).place(x=345, y=365)
+        ).place(x=360, y=365)
 
     # -------- DELETE EMPLOYEE --------
     def show_delete_employee():
