@@ -129,62 +129,18 @@ def welcome_window(root, username, emailid,
         )
 
         # Entries
-        name_entry = Entry(
-            form_card,
-            font=("Segoe UI", 11),
-            width=25,
-            bd=1,
-            relief="solid"
-        )
-
-        email_entry = Entry(
-            form_card,
-            font=("Segoe UI", 11),
-            width=25,
-            bd=1,
-            relief="solid"
-        )
-
-        password_entry = Entry(
-            form_card,
-            font=("Segoe UI", 11),
-            width=25,
-            bd=1,
-            relief="solid",
-            show="*"
-        )
-
-        phone_entry = Entry(
-            form_card,
-            font=("Segoe UI", 11),
-            width=25,
-            bd=1,
-            relief="solid"
-        )
-
-        dept_entry = Entry(
-            form_card,
-            font=("Segoe UI", 11),
-            width=25,
-            bd=1,
-            relief="solid"
-        )
-
-        salary_entry = Entry(
-            form_card,
-            font=("Segoe UI", 11),
-            width=25,
-            bd=1,
-            relief="solid"
-        )
+        name_entry = Entry(form_card, font=("Segoe UI", 11), width=25)
+        email_entry = Entry(form_card, font=("Segoe UI", 11), width=25)
+        password_entry = Entry(form_card, font=("Segoe UI", 11), width=25, show="*")
+        phone_entry = Entry(form_card, font=("Segoe UI", 11), width=25)
+        dept_entry = Entry(form_card, font=("Segoe UI", 11), width=25)
+        salary_entry = Entry(form_card, font=("Segoe UI", 11), width=25)
 
         address_box = Text(
             form_card,
             font=("Segoe UI", 10),
             width=25,
-            height=3,
-            bd=1,
-            relief="solid"
+            height=3
         )
 
         gender_var = StringVar(value="Male")
@@ -218,9 +174,7 @@ def welcome_window(root, username, emailid,
             text="Gender",
             bg="white",
             fg="#2c3e50",
-            font=("Segoe UI", 10, "bold"),
-            width=12,
-            anchor="w"
+            font=("Segoe UI", 10, "bold")
         ).place(x=30, y=270)
 
         Radiobutton(
@@ -245,9 +199,7 @@ def welcome_window(root, username, emailid,
             text="State",
             bg="white",
             fg="#2c3e50",
-            font=("Segoe UI", 10, "bold"),
-            width=12,
-            anchor="w"
+            font=("Segoe UI", 10, "bold")
         ).place(x=30, y=310)
 
         OptionMenu(
@@ -267,9 +219,7 @@ def welcome_window(root, username, emailid,
             text="Address",
             bg="white",
             fg="#2c3e50",
-            font=("Segoe UI", 10, "bold"),
-            width=12,
-            anchor="w"
+            font=("Segoe UI", 10, "bold")
         ).place(x=30, y=350)
 
         address_box.place(x=170, y=340)
@@ -284,20 +234,10 @@ def welcome_window(root, username, emailid,
             dept = dept_entry.get().strip()
             salary = salary_entry.get().strip()
 
-            address = address_box.get(
-                "1.0",
-                END
-            ).strip()
+            address = address_box.get("1.0", END).strip()
 
             gender = gender_var.get()
             state = state_var.get()
-
-            if not name:
-                messagebox.showerror(
-                    "Error",
-                    "Name Required"
-                )
-                return
 
             try:
 
@@ -317,9 +257,7 @@ def welcome_window(root, username, emailid,
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """
 
-                cursor.execute((
-                    q
-                ), (
+                cursor.execute(q, (
 
                     name,
                     email,
@@ -364,6 +302,202 @@ def welcome_window(root, username, emailid,
             command=save_user
         ).place(x=360, y=365)
 
+    # -------- UPDATE EMPLOYEE --------
+    def show_update_employee():
+
+        clear_content()
+
+        Label(
+            content,
+            text="Update Employee",
+            font=("Segoe UI", 22, "bold"),
+            bg="#f4f6f7",
+            fg="#2c3e50"
+        ).pack(pady=15)
+
+        employee_list = Listbox(
+            content,
+            font=("Segoe UI", 11),
+            width=50,
+            height=8
+        )
+
+        employee_list.pack(pady=10)
+
+        try:
+
+            mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="Kamal@1224",
+                database="Python_GuiDb"
+            )
+
+            mycursor = mydb.cursor()
+
+            q = """
+            SELECT Sno, name, email
+            FROM newuser
+            """
+
+            mycursor.execute(q)
+
+            employees = mycursor.fetchall()
+
+            for emp in employees:
+
+                employee_list.insert(
+                    END,
+                    f"ID: {emp[0]} | {emp[1]} | {emp[2]}"
+                )
+
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+        def edit_selected():
+
+            selected = employee_list.curselection()
+
+            if not selected:
+
+                messagebox.showerror(
+                    "Error",
+                    "Select Employee"
+                )
+
+                return
+
+            data = employee_list.get(selected[0])
+
+            emp_id = data.split("|")[0]
+            emp_id = emp_id.replace("ID:", "").strip()
+
+            q = """
+            SELECT *
+            FROM newuser
+            WHERE Sno=%s
+            """
+
+            mycursor.execute(q, (emp_id,))
+
+            emp = mycursor.fetchone()
+
+            form_card = Frame(
+                content,
+                bg="white",
+                bd=1,
+                relief="solid"
+            )
+
+            form_card.place(
+                x=120,
+                y=220,
+                width=450,
+                height=260
+            )
+
+            name_entry = Entry(form_card, width=25)
+            email_entry = Entry(form_card, width=25)
+            phone_entry = Entry(form_card, width=25)
+            dept_entry = Entry(form_card, width=25)
+            salary_entry = Entry(form_card, width=25)
+
+            # OLD VALUES
+            name_entry.insert(0, emp[1])
+            email_entry.insert(0, emp[2])
+            phone_entry.insert(0, emp[8])
+            dept_entry.insert(0, emp[9])
+            salary_entry.insert(0, emp[10])
+
+            def row(y, text, widget):
+
+                Label(
+                    form_card,
+                    text=text,
+                    bg="white",
+                    font=("Segoe UI", 10, "bold"),
+                    width=12,
+                    anchor="w"
+                ).place(x=30, y=y)
+
+                widget.place(x=170, y=y)
+
+            row(20, "Name", name_entry)
+            row(60, "Email", email_entry)
+            row(100, "Phone", phone_entry)
+            row(140, "Department", dept_entry)
+            row(180, "Salary", salary_entry)
+
+            # SAVE UPDATE
+            def save_update():
+
+                new_name = name_entry.get()
+                new_email = email_entry.get()
+                new_phone = phone_entry.get()
+                new_dept = dept_entry.get()
+                new_salary = salary_entry.get()
+
+                try:
+
+                    q = """
+                    UPDATE newuser
+                    SET
+                    name=%s,
+                    email=%s,
+                    phone=%s,
+                    department=%s,
+                    salary=%s
+                    WHERE Sno=%s
+                    """
+
+                    mycursor.execute(q, (
+
+                        new_name,
+                        new_email,
+                        new_phone,
+                        new_dept,
+                        new_salary,
+                        emp_id
+
+                    ))
+
+                    mydb.commit()
+
+                    messagebox.showinfo(
+                        "Success",
+                        "Employee Updated Successfully"
+                    )
+
+                    show_update_employee()
+
+                except Exception as e:
+                    messagebox.showerror(
+                        "Error",
+                        str(e)
+                    )
+
+            Button(
+                form_card,
+                text="Save Changes",
+                bg="#3498db",
+                fg="white",
+                font=("Segoe UI", 10, "bold"),
+                width=18,
+                bd=0,
+                command=save_update
+            ).place(x=140, y=220)
+
+        Button(
+            content,
+            text="Edit Selected",
+            bg="#f39c12",
+            fg="white",
+            font=("Segoe UI", 11, "bold"),
+            width=18,
+            bd=0,
+            command=edit_selected
+        ).pack(pady=10)
+
     # -------- DELETE EMPLOYEE --------
     def show_delete_employee():
 
@@ -381,9 +515,7 @@ def welcome_window(root, username, emailid,
             content,
             font=("Segoe UI", 11),
             width=50,
-            height=15,
-            bd=1,
-            relief="solid"
+            height=15
         )
 
         employee_list.pack(pady=10)
@@ -562,7 +694,6 @@ def welcome_window(root, username, emailid,
         fg="white",
         font=("Segoe UI", 10, "bold"),
         bd=0,
-        cursor="hand2",
         command=show_profile
     ).pack(pady=12)
 
@@ -575,8 +706,19 @@ def welcome_window(root, username, emailid,
         fg="white",
         font=("Segoe UI", 10, "bold"),
         bd=0,
-        cursor="hand2",
         command=show_add_employee
+    ).pack(pady=12)
+
+    Button(
+        sidebar,
+        text="Update Employee",
+        width=20,
+        height=2,
+        bg="#34495e",
+        fg="white",
+        font=("Segoe UI", 10, "bold"),
+        bd=0,
+        command=show_update_employee
     ).pack(pady=12)
 
     Button(
@@ -588,7 +730,6 @@ def welcome_window(root, username, emailid,
         fg="white",
         font=("Segoe UI", 10, "bold"),
         bd=0,
-        cursor="hand2",
         command=show_delete_employee
     ).pack(pady=12)
 
@@ -601,7 +742,6 @@ def welcome_window(root, username, emailid,
         fg="white",
         font=("Segoe UI", 10, "bold"),
         bd=0,
-        cursor="hand2",
         command=show_complaint
     ).pack(pady=12)
 
@@ -614,7 +754,6 @@ def welcome_window(root, username, emailid,
         fg="white",
         font=("Segoe UI", 10, "bold"),
         bd=0,
-        cursor="hand2",
         command=logout
     ).pack(pady=20)
 
